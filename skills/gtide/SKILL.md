@@ -50,7 +50,7 @@ gtide pr --draft                               # open PR/MR (needs user OK)
 | Pull/Merge Request | `gtide pr` (`--draft`, `--title`, `--body`, `--base`) |
 | Review someone's PR | `gtide review <number>` (`--diff` for the patch) |
 | List PRs | `gtide pr list`, `gtide pr view <n>`, `gtide pr status` |
-| Commit log | `gtide history` (`--me`, `--since 7d`, `-f <file>`, `--type feat`, `<from>..<to>`) |
+| Commit log | `gtide history` (`--me`, `--since 7d`, `-f <file>`, `--type feat`, `<from>..<to>`; `-f <file> --patch` shows what each commit changed) |
 | Branch overview / cleanup | `gtide branch`, `gtide branch --merged`, `gtide branch delete <name>` |
 | Rename branch | `gtide branch rename <old> <new>` |
 | Tags | `gtide tag`, `gtide tag create v1.2.0 -m "Release 1.2.0" --push` |
@@ -61,6 +61,15 @@ gtide pr --draft                               # open PR/MR (needs user OK)
 | Something odd | `gtide doctor` |
 
 Run `gtide <command> --help` when unsure: the help has examples.
+
+## Reading state as data (gtide 1.6.0+)
+
+When you need to decide something from the repo state, prefer `--json` over parsing the table: stdout is only JSON, notes go to stderr, an empty result is `[]` or an object. Available on `status`, `diff` (`--patch` adds the patch), `branch`, `history` (`--patch` adds what each commit changed, with `-f` only that file), `history show`, `tag` and `stash list`. Failure is the exit code, with the message on stderr. The shapes are in the gtide repo's `docs/json.md`.
+
+```bash
+gtide status --json                       # branch, upstream/base distance, files with staged/unstaged/conflict flags
+gtide history -f src/login.go --patch --json   # who changed a file, and what each commit changed in it
+```
 
 ## Commit messages
 

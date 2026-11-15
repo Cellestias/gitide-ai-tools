@@ -40,4 +40,4 @@ Restart the session. The skill triggers on git tasks in repos with `.tide.yml`; 
 
 ## Keeping it right
 
-The command map is written against `gtide` v1.5.0. When commands or flags change, re-check with `gtide <command> --help` and update the skill.
+The command map is written against `gtide` v1.5.0, plus the `--json` section, which needs v1.6.0. When commands or flags change, re-check with `gtide <command> --help` and update the skill.
