@@ -7,7 +7,20 @@ Teach AI coding agents to use [Git Tide](https://github.com/Cellestias/git-tide)
 | [skills/gtide/SKILL.md](skills/gtide/SKILL.md) | Skill: rules, task→command map, how to react to refusals. |
 | [agents/gtide.md](agents/gtide.md) | Subagent: a Git worker that follows the skill and reports briefly. |
 
-## Install (Claude Code)
+## Install with `npx skills`
+
+```bash
+npx skills add Cellestias/gtide-ai                 # pick the agents interactively
+npx skills add Cellestias/gtide-ai --skill gtide   # just this skill
+npx skills add Cellestias/gtide-ai -g              # global, all projects
+npx skills add Cellestias/gtide-ai --list          # see what it contains, install nothing
+```
+
+This installs the **skill** only, for whichever agent you choose (Claude Code, Cursor, Codex, Copilot, ...). The CLI finds it at `skills/gtide/SKILL.md`. It needs the repo to be public on GitHub as `Cellestias/gtide-ai`. A full URL or a local path (`npx skills add ./gtide-ai`) also works.
+
+The subagent in `agents/` is Claude Code specific, so it is not part of `npx skills`; copy it by hand (below).
+
+## Install by hand (Claude Code)
 
 ```bash
 # skill, for every project
