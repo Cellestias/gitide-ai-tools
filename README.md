@@ -1,0 +1,30 @@
+# gtide-ai
+
+Teach AI coding agents to use [Git Tide](https://github.com/Cellestias/git-tide) (`gtide`) instead of raw Git.
+
+| File | What |
+|---|---|
+| [skills/gtide/SKILL.md](skills/gtide/SKILL.md) | Skill: rules, task→command map, how to react to refusals. |
+| [agents/gtide.md](agents/gtide.md) | Subagent: a Git worker that follows the skill and reports briefly. |
+
+## Install (Claude Code)
+
+```bash
+# skill, for every project
+mkdir -p ~/.claude/skills && cp -R skills/gtide ~/.claude/skills/
+
+# subagent, for every project
+mkdir -p ~/.claude/agents && cp agents/gtide.md ~/.claude/agents/
+
+# or per project: use <project>/.claude/skills and <project>/.claude/agents
+```
+
+Restart the session. The skill triggers on git tasks in repos with `.tide.yml`; the agent is available as `gtide`.
+
+## Other tools
+
+`skills/gtide/SKILL.md` is plain Markdown. For Cursor, Copilot, Codex, Gemini CLI and similar, paste its body (without the frontmatter) into the tool's rules file (`AGENTS.md`, `.cursor/rules`, `.github/copilot-instructions.md`).
+
+## Keeping it right
+
+The command map is written against `gtide` v1.5.0. When commands or flags change, re-check with `gtide <command> --help` and update the skill.
