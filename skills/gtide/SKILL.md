@@ -62,14 +62,35 @@ gtide pr --draft                               # open PR/MR (needs user OK)
 
 Run `gtide <command> --help` when unsure: the help has examples.
 
-## Reading state as data (gtide 1.6.0+)
+## Output as data: `--json` (gtide 1.10.0+)
 
-When you need to decide something from the repo state, prefer `--json` over parsing the table: stdout is only JSON, notes go to stderr, an empty result is `[]` or an object. Available on `status`, `diff` (`--patch` adds the patch), `branch`, `history` (`--patch` adds what each commit changed, with `-f` only that file), `history show`, `tag` and `stash list`. Failure is the exit code, with the message on stderr. The shapes are in the gtide repo's `docs/json.md`.
+Every command takes `--json`. Use it instead of parsing text, for reads and for actions.
+
+Rules that always hold:
+- stdout is only the JSON document. Progress, notes and warnings go to stderr.
+- Failure is the exit code (`0` ok, `1` general, `2` usage, `3` config, `4` policy, `5` external, `6` unsafe repo) with stdout empty. The message and hint are on stderr: read them, do not retry blindly.
+- Exceptions that still print a document on a non-zero exit: `doctor --json` (exit 1) and `config validate --json` (exit 3).
+- Lists are `[]`, never `null`. New fields may appear; ignore the ones you do not know.
+- Pass `--yes` with `--json` when a command would otherwise ask; there is nobody to answer a prompt.
+
+Reads: `status`, `diff` (`--patch`), `branch`, `history` (`--patch`, `-f <file>`), `history show`, `tag`, `stash list`, `pr list`, `pr view`, `pr status`, `config show`, `config validate`, `remote show`, `doctor`, `security`, `secrets scan`.
+
+Actions (`save`, `amend`, `undo`, `push`, `pull`, `update`, `create`, `change`, `pr`, `review`, `continue`, `abort`, `tag create|push|delete`, `branch delete|rename`, `stash`, `stash pop|drop`, `remote add|set-url`, `init`, `clone`) print one envelope:
+
+```json
+{"ok": true, "action": "save", "branch": "feature/x", "head": "abc1234", "details": {}}
+```
+
+`details` depends on the action (commit hash and files for `save`, the request URL for `pr`, and so on). Read `branch` and `head` to confirm the state after the action instead of running `status` again.
 
 ```bash
-gtide status --json                       # branch, upstream/base distance, files with staged/unstaged/conflict flags
-gtide history -f src/login.go --patch --json   # who changed a file, and what each commit changed in it
+gtide status --json                              # branch, upstream/base distance, files with flags
+gtide save -m "fix(api): handle empty token" -f api/token.go --json
+gtide pr view 42 --json                          # state, review, files, commits of a request
+gtide history -f src/login.go --patch --json     # who changed a file, and what they changed
 ```
+
+Older gtide: reads on `status`, `diff`, `branch`, `history`, `tag`, `stash list` need 1.6.0; the rest needs 1.10.0. If `--json` is rejected, say which version is installed (`gtide version`) and fall back to the text output. The shapes are in the gtide repo's `docs/json.md`.
 
 ## Commit messages
 

@@ -8,12 +8,16 @@ You handle version control for this repository using Git Tide (`gtide`). Follow 
 
 ## Process
 
-1. `gtide status`. Understand branch, upstream, base, changes. If `gtide` is missing, say so and stop; do not fall back to raw git for writes.
-2. Read the diff (`gtide diff`) before committing. Group changes by intent: one commit each, `gtide save -m "type(scope): subject" -f <paths>`. Never use bare `gtide save` when unrelated files changed.
+1. `gtide status --json`. Understand branch, upstream, base, changes. If `gtide` is missing, say so and stop; do not fall back to raw git for writes.
+2. Read the diff (`gtide diff --json`) before committing. Group changes by intent: one commit each, `gtide save -m "type(scope): subject" -f <paths>`. Never use bare `gtide save` when unrelated files changed.
 3. On a protected branch, `gtide create <branch>` first.
 4. Sync with `gtide pull` (same branch) or `gtide update` (base branch). Dirty tree: commit or `gtide stash`.
 5. Publish with `gtide push`. Open PR/MR with `gtide pr` only after the user agreed.
 6. Finish with `gtide status` and report.
+
+## Reading output
+
+Add `--json` to every gtide command you run: stdout is then only a JSON document (an `{ok, action, branch, head, details}` envelope for actions), notes are on stderr, and failure is a non-zero exit with empty stdout. Decide from the fields, not from the text. Use `--yes` with it so nothing waits for a prompt. If `--json` is rejected, the installed gtide is older than 1.10.0: report the version and use the text output.
 
 ## Hard limits
 
