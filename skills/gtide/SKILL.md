@@ -50,8 +50,12 @@ gtide pr --draft                               # open PR/MR (needs user OK)
 | Pull/Merge Request | `gtide pr` (`--draft`, `--title`, `--body`, `--base`) |
 | Review someone's PR | `gtide review <number>` (`--diff` for the patch) |
 | List PRs | `gtide pr list`, `gtide pr view <n>`, `gtide pr status` |
+| Review a PR without checkout (gtide 1.11.0+, GitHub) | `gtide pr diff <n>` (`--file`), `gtide pr comments <n>`, `gtide pr commit <n> <sha>`; waiting on you: `gtide pr list --reviewer me` |
+| Take part in a review (1.11.0+) | `gtide pr comment <n> --body "…"` (`--file f --line N` for a line, `--reply-to <id>`), `gtide pr approve <n>`, `gtide pr request-changes <n> --body "…"` (not on your own PR) |
+| Change reviewers, assignees, labels (1.11.0+) | `gtide pr options` lists them, then `gtide pr edit <n> --add-reviewer a --add-label bug --remove-assignee b` |
 | Commit log | `gtide history` (`--me`, `--since 7d`, `-f <file>`, `--type feat`, `<from>..<to>`; `-f <file> --patch` shows what each commit changed) |
 | Branch overview / cleanup | `gtide branch`, `gtide branch --merged`, `gtide branch delete <name>` |
+| Compare two branches (Git 2.40+) | `gtide history --compare <from> <to>`: what `<from>` has that `<to>` lacks, and which commits would conflict (exit 6 when one does; `--json` still prints) |
 | Rename branch | `gtide branch rename <old> <new>` |
 | Tags | `gtide tag`, `gtide tag create v1.2.0 -m "Release 1.2.0" --push` |
 | New project | `mkdir app && cd app && gtide init --yes --remote <url>` |
@@ -73,9 +77,9 @@ Rules that always hold:
 - Lists are `[]`, never `null`. New fields may appear; ignore the ones you do not know.
 - Pass `--yes` with `--json` when a command would otherwise ask; there is nobody to answer a prompt.
 
-Reads: `status`, `diff` (`--patch`), `branch`, `history` (`--patch`, `-f <file>`), `history show`, `tag`, `stash list`, `pr list`, `pr view`, `pr status`, `config show`, `config validate`, `remote show`, `doctor`, `security`, `secrets scan`.
+Reads: `status`, `diff` (`--patch`), `branch`, `history` (`--patch`, `-f <file>`), `history show`, `tag`, `stash list`, `pr list`, `pr view`, `pr status`, `pr diff`, `pr comments`, `pr commit`, `pr options`, `config show`, `config validate`, `remote show`, `doctor`, `security`, `secrets scan`.
 
-Actions (`save`, `amend`, `undo`, `push`, `pull`, `update`, `create`, `change`, `pr`, `review`, `continue`, `abort`, `tag create|push|delete`, `branch delete|rename`, `stash`, `stash pop|drop`, `remote add|set-url`, `init`, `clone`) print one envelope:
+Actions (`save`, `amend`, `undo`, `push`, `pull`, `update`, `create`, `change`, `pr`, `review`, `continue`, `abort`, `tag create|push|delete`, `branch delete|rename`, `pr comment|approve|request-changes|edit`, `stash`, `stash pop|drop`, `remote add|set-url`, `init`, `clone`) print one envelope:
 
 ```json
 {"ok": true, "action": "save", "branch": "feature/x", "head": "abc1234", "details": {}}
