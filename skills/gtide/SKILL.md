@@ -43,6 +43,10 @@ gtide pr --draft                               # open PR/MR (needs user OK)
 | Commit what is already staged | `gtide commit -m "type: msg"` |
 | Fix last commit (not pushed) | `gtide amend -f forgotten.go` or `gtide amend -m "new msg"` |
 | Take last commit back (not pushed) | `gtide undo` (changes stay staged) |
+| Copy commits from another branch (1.12.0+) | `gtide pick <sha>`, `gtide pick <from>..<to>` (oldest first; skips what is already there; conflicts: `gtide continue` / `gtide abort`) |
+| Bring files from another ref, no merge (1.12.0+) | `gtide restore --from origin/staging -f path -f dir/` (staged; then `gtide save`; asks before overwriting local edits) |
+| Take back a commit, even pushed (1.12.0+) | `gtide revert <sha>` (new commit; `undo` is for unpushed ones) |
+| Refresh remote branches only (1.12.0+) | `gtide fetch [remote]` (touches no local branch or file) |
 | Put work aside | `gtide stash -m "note"`, then `gtide stash pop` |
 | Get remote changes of this branch | `gtide pull` |
 | Get base branch changes | `gtide update` |
@@ -79,7 +83,7 @@ Rules that always hold:
 
 Reads: `status`, `diff` (`--patch`), `branch`, `history` (`--patch`, `-f <file>`), `history show`, `tag`, `stash list`, `pr list`, `pr view`, `pr status`, `pr diff`, `pr comments`, `pr commit`, `pr options`, `config show`, `config validate`, `remote show`, `doctor`, `security`, `secrets scan`.
 
-Actions (`save`, `amend`, `undo`, `push`, `pull`, `update`, `create`, `change`, `pr`, `review`, `continue`, `abort`, `tag create|push|delete`, `branch delete|rename`, `pr comment|approve|request-changes|edit`, `stash`, `stash pop|drop`, `remote add|set-url`, `init`, `clone`) print one envelope:
+Actions (`save`, `amend`, `undo`, `pick`, `revert`, `restore`, `fetch`, `push`, `pull`, `update`, `create`, `change`, `pr`, `review`, `continue`, `abort`, `tag create|push|delete`, `branch delete|rename`, `pr comment|approve|request-changes|edit`, `stash`, `stash pop|drop`, `remote add|set-url`, `init`, `clone`) print one envelope:
 
 ```json
 {"ok": true, "action": "save", "branch": "feature/x", "head": "abc1234", "details": {}}
@@ -110,7 +114,8 @@ Never add AI attribution lines (`Co-Authored-By`, "Generated with ...") unless t
 | protected branch | `gtide create <name>`, redo the work there. Exception: the very first commit/push of a brand new repo is allowed |
 | uncommitted changes would be at risk | `gtide save` them or `gtide stash`, re-run |
 | a merge/rebase is in progress | resolve, `git add`, `gtide continue` (or `gtide abort`) |
-| commit already on the remote (undo/amend) | history is published. Make a new commit with `gtide save` instead |
+| commit already on the remote (undo/amend) | history is published. Make a new commit with `gtide save`, or take it back with `gtide revert <sha>` |
+| pick refused: message or secret | the source commit breaks the rules; fix it on its own branch, do not work around it |
 | conflicts while integrating base | resolve files, `git add`, `gtide continue`; do not guess at conflict resolution, ask the user if the intent is unclear |
 | invalid commit message | fix to Conventional Commits |
 | secret detected | remove it, rotate it if it was ever committed or pushed, tell the user |
@@ -123,7 +128,11 @@ Never add AI attribution lines (`Co-Authored-By`, "Generated with ...") unless t
 
 ## Not covered by gtide
 
-Use plain `git` (read-only first, and ask before anything destructive) for: `git log --graph`, `git blame`, `git bisect`, `git cherry-pick`, `git revert`, `git reset --hard`, `git rebase -i`, submodules, worktrees. `git reset --hard`, `git clean -fd`, `git checkout -- .` destroy work: never run them without explicit user approval.
+Use plain `git` (read-only first, and ask before anything destructive) only for what has no command: `git log --graph`, `git blame`, `git bisect`, `git merge-base`, `git reset --hard`, `git rebase -i`, submodules, worktrees. Before gtide 1.12.0 that list also had `cherry-pick`, `revert`, `checkout <ref> -- <files>` and a bare `fetch`; with an older gtide, use git for those.
+
+Everything gtide does cover goes through gtide, **reads included**: `gtide status` not `git status`, `gtide diff`, `gtide history` (`--me`, `--since`, `-f <file>`, `<from>..<to>`), `gtide branch`, `gtide save -f <files>` instead of `git add` + `git commit`. The safety rules live there.
+
+`git reset --hard`, `git clean -fd` and `git checkout -- .` destroy work: never run them without explicit user approval.
 
 ## Config
 
