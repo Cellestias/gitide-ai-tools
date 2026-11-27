@@ -40,4 +40,4 @@ Restart the session. The skill triggers on git tasks in repos with `.tide.yml`; 
 
 ## Keeping it right
 
-The command map is written against `gtide` v1.5.0, plus the pull request review and compare rows (v1.11.0, Git 2.40 for compare), and the `--json` section, which needs v1.10.0 for every command (v1.6.0 for the first read commands). When commands or flags change, re-check with `gtide <command> --help` and update the skill.
+The command map is written against `gtide` v1.5.0, plus the pull request review and compare rows (v1.11.0, Git 2.40 for compare), the `pick`, `restore`, `revert` and `fetch` rows (v1.12.0), and the `--json` section, which needs v1.10.0 for every command (v1.6.0 for the first read commands). When commands or flags change, re-check with `gtide <command> --help` and update the skill.
